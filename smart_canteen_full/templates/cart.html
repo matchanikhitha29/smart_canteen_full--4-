@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Your Cart</h2>
+{% if cart_items %}
+<table class="table align-middle">
+  <thead>
+    <tr>
+      <th>Item</th>
+      <th style="width: 150px;">Quantity</th>
+      <th>Line Total</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in cart_items %}
+    <tr>
+      <td>{{ row.item.name }}</td>
+      <td>
+        <div class="btn-group" role="group">
+          <a href="{% url 'update_cart' row.item.id 'dec' %}" class="btn btn-sm btn-outline-secondary">-</a>
+          <span class="btn btn-sm btn-light disabled">{{ row.quantity }}</span>
+          <a href="{% url 'update_cart' row.item.id 'inc' %}" class="btn btn-sm btn-outline-secondary">+</a>
+        </div>
+      </td>
+      <td>₹{{ row.line_total }}</td>
+      <td>
+        <a href="{% url 'remove_from_cart' row.item.id %}" class="btn btn-sm btn-outline-danger">Remove</a>
+      </td>
+    </tr>
+    {% endfor %}
+    <tr class="fw-bold">
+      <td colspan="2" class="text-end">Total</td>
+      <td>₹{{ total }}</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+{% if user.is_authenticated %}
+  <a href="{% url 'place_order' %}" class="btn btn-success">Place Order</a>
+{% else %}
+  <p class="text-muted">Please login to place your order.</p>
+  <a href="{% url 'login' %}?next={% url 'cart_view' %}" class="btn btn-primary">Login</a>
+{% endif %}
+<a href="{% url 'menu_list' %}" class="btn btn-secondary">Back to Menu</a>
+{% else %}
+<p>Your cart is empty.</p>
+<a href="{% url 'menu_list' %}" class="btn btn-primary">Go to Menu</a>
+{% endif %}
+{% endblock %}
